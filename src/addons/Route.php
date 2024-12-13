@@ -31,7 +31,7 @@ class Route
         $action = $request->route('action');
 
         // TODO: 判断是不是多应用插件
-        $module = $request->route('module');
+        $module = $request->route('module','');
         // 触发addons_begin事件,可以在事件处理程序中进行一些全局的初始化操作
         Event::trigger('addons_begin', $request);
         // 检查插件、控制器和操作的名称是否为空,如果为空,抛出HTTP异常

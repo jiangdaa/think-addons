@@ -95,7 +95,6 @@ class Service extends \think\Service
                 $middleware = $configs['middleware'] ?? [];
             }
             $this->app->middleware->import($middleware, 'route');
-
         } else {
             // 加载所有插架的路由
             $addonsPath = $this->app->addons->getAddonsPath();
@@ -107,16 +106,12 @@ class Service extends \think\Service
                         // 多应用
                         foreach ($info as $app) {
                             $configs = $this->getRouteFile($addonsDir,$app);
-                            $middleware = $configs['middleware'] ?? [];
                             $routes = array_merge($routes, $configs['routes'] ?? []);
-                            $this->app->middleware->import($middleware, 'route');
                         }
                     } else {
                         // 单应用
                         $configs = $this->getRouteFile($addonsDir, false);
-                        $middleware = $configs['middleware'] ?? [];
                         $routes = array_merge($routes, $configs['routes'] ?? []);
-                        $this->app->middleware->import($middleware, 'route');
                     }
                 }
             }
