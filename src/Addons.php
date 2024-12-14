@@ -45,7 +45,7 @@ abstract class Addons
         $this->addon_config = "addon_{$this->name}_config";
         $this->addon_info = "addon_{$this->name}_info";
         $info = $this->getInfo();
-        if ($info['status']) {
+        if ($info['status'] ?? false) {
             // 克隆视图引擎实例,用于插件的视图渲染
             $this->view = clone View::engine('Blade');
             // 配置视图路径为插件的视图目录
