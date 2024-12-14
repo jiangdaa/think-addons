@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace think;
 
-use think\App;
 use think\facade\Config;
 use think\facade\View;
 use think\utils\FileHelper;
@@ -45,15 +44,18 @@ abstract class Addons
         // 定义插件的配置和信息的存储键名
         $this->addon_config = "addon_{$this->name}_config";
         $this->addon_info = "addon_{$this->name}_info";
-        // 克隆视图引擎实例,用于插件的视图渲染
-        $this->view = clone View::engine('Blade');
-        // 配置视图路径为插件的视图目录
-        $this->view->config([
-            'view_path' => $this->addon_path . 'view' . DIRECTORY_SEPARATOR
-        ]);
-        // 执行初始化操作,可用于插件的自定义初始化设置
-        // 控制器初始化
-        $this->initialize();
+        $info = $this->getInfo();
+        if ($info['status']) {
+            // 克隆视图引擎实例,用于插件的视图渲染
+            $this->view = clone View::engine('Blade');
+            // 配置视图路径为插件的视图目录
+            $this->view->config([
+                'view_path' => $this->addon_path . 'view' . DIRECTORY_SEPARATOR
+            ]);
+            // 执行初始化操作,可用于插件的自定义初始化设置
+            // 控制器初始化
+            $this->initialize();
+        }
     }
 
     /**
@@ -293,10 +295,11 @@ abstract class Addons
      * 它的目的是为了要求所有继承自这个类的子类必须提供一个安装的实现方法
      * 具体的安装步骤和逻辑应该在子类的install方法中实现
      *
-     * @abstract
      * @return void 没有返回值,因为安装操作通常是副作用的表现,例如创建文件、设置配置等
      */
-    abstract public function install();
+    public function install()
+    {
+    }
 
     /**
      * 抽象方法,用于卸载插件
@@ -305,8 +308,9 @@ abstract class Addons
      * 当调用此方法时,插件应该执行必要的操作以确保自身被安全地从系统中卸载
      * 这可能包括清理数据库、删除文件、取消注册事件监听器等操作
      *
-     * @abstract
      * @access public
      */
-    abstract public function uninstall();
+    public function uninstall()
+    {
+    }
 }
