@@ -82,15 +82,17 @@ class Service extends \think\Service
         $routes = [];
         $middleware = [];
         $pathinfo = request()->pathinfo();
-        if ($pathinfo && str_starts_with($pathinfo, '/addons/')) {
+        if ($pathinfo && str_starts_with($pathinfo, 'addons/')) {
+            list(, $addonName) = explode('/', $pathinfo);
+            $isModuleMode = $this->getMultiApps($addonName);
             if ($isModuleMode) {
                 $urlChunks = explode('/', $pathinfo);
-                list(, $addonName, $moduleName) = $urlChunks;
+                list(, , $moduleName) = $urlChunks;
                 $configs = $this->getRouteFile($addonName, $moduleName);
                 $routes = $configs['routes'] ?? [];
                 $middleware = $configs['middleware'] ?? [];
             } else {
-                $configs = $this->getRouteFile($addonName);
+                $configs = $this->getRouteFile($addonName, '');
                 $routes = $configs['routes'] ?? [];
                 $middleware = $configs['middleware'] ?? [];
             }
@@ -105,7 +107,7 @@ class Service extends \think\Service
                     if ($info) {
                         // 多应用
                         foreach ($info as $app) {
-                            $configs = $this->getRouteFile($addonsDir,$app);
+                            $configs = $this->getRouteFile($addonsDir, $app);
                             $routes = array_merge($routes, $configs['routes'] ?? []);
                         }
                     } else {
